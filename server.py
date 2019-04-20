@@ -1,5 +1,5 @@
 from instagram import application
 
-print('Ban')
+print('lamborghini urus')
 
 application.run()
