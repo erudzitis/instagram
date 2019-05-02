@@ -1,4 +1,5 @@
 import flask
+from flask import url_for
 
 from flask.views import MethodView
 
@@ -46,8 +47,7 @@ class UserRegistrationView(MethodView):
             password=hashed_password,
         )
 
-        return f'user_name: {user_name} email: {email} password: {hashed_password}'
-
+        return flask.redirect(url_for('login'))
 
 class UserLoginView(MethodView):
     def get(self):
@@ -73,7 +73,7 @@ class UserLoginView(MethodView):
                 logged_in = True
 
         if logged_in:
-            return 'Logged in'
+            return flask.redirect(url_for('feed'))
 
         return 'Failed to log in'
 
@@ -183,3 +183,10 @@ class WelcomePage(MethodView):
 
     def post(self):
         return flask.render_template('welcome_page.html')
+
+class Feed(MethodView):
+    def get(self):
+        return flask.render_template('feed.html')
+
+    def post(self):
+        return flask.render_template('feed.html')

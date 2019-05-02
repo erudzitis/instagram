@@ -65,4 +65,9 @@ def create_application(configuration):
         view_func=views.WelcomePage.as_view('welcome-page'),
     )
 
+    application.add_url_rule(
+        rule='/feed',
+        view_func=views.Feed.as_view('feed'),
+    )
+
     return application
