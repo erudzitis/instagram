@@ -176,3 +176,10 @@ class AddComment(MethodView):
         )
 
         return flask.redirect(redirect_url)
+
+class WelcomePage(MethodView):
+    def get(self):
+        return flask.render_template('welcome_page.html')
+
+    def post(self):
+        return flask.render_template('welcome_page.html')

@@ -60,4 +60,9 @@ def create_application(configuration):
         view_func=views.AddComment.as_view('add-comment'),
     )
 
+    application.add_url_rule(
+        rule='/',
+        view_func=views.WelcomePage.as_view('welcome-page'),
+    )
+
     return application
