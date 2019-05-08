@@ -1,5 +1,5 @@
 import flask
-from flask import url_for
+from flask import url_for, redirect
 
 from flask.views import MethodView
 
@@ -7,6 +7,7 @@ from flask_login import (
     login_user,
     current_user,
     login_required,
+    logout_user,
 )
 
 from werkzeug.security import (
@@ -35,6 +36,8 @@ class UserRegistrationView(MethodView):
         return flask.render_template('registration.html')
 
     def post(self):
+        if current_user.is_authenticated:
+            return redirect(url_for('feed'))
         user_name = flask.request.form['user_name']
         email = flask.request.form['email']
         password = flask.request.form['password']
@@ -192,5 +195,14 @@ class Feed(MethodView):
     def get(self):
         return flask.render_template('feed.html')
 
-    def post(self):
+    def post(self, user_id):
         return flask.render_template('feed.html')
+
+class Logout(MethodView):
+    def get(self):
+        logout_user()
+        return redirect(url_for('welcome-page'))
+
+    def post(self):
+        logout_user()
+        return redirect(url_for('welcome-page'))

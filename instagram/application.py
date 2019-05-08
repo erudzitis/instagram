@@ -70,4 +70,9 @@ def create_application(configuration):
         view_func=views.Feed.as_view('feed'),
     )
 
+    application.add_url_rule(
+        rule='/logout',
+        view_func=views.Logout.as_view('logout'),
+    )
+
     return application
