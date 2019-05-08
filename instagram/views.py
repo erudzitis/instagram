@@ -189,7 +189,6 @@ class Feed(MethodView):
         login_required,
     ]
 
-
     def get(self):
         return flask.render_template('feed.html')
 
