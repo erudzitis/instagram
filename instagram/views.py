@@ -185,6 +185,10 @@ class WelcomePage(MethodView):
         return flask.render_template('welcome_page.html')
 
 class Feed(MethodView):
+    decorators = [
+        login_required,
+    ]
+
     def get(self):
         return flask.render_template('feed.html')
 
