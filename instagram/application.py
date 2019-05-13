@@ -75,4 +75,9 @@ def create_application(configuration):
         view_func=views.Logout.as_view('logout'),
     )
 
+    application.add_url_rule(
+        rule='/settings/<user_id>/',
+        view_func=views.ProfileSettings.as_view('profile-settings'),
+    )
+
     return application

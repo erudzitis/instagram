@@ -208,3 +208,17 @@ class Logout(MethodView):
     def post(self):
         logout_user()
         return redirect(url_for('welcome-page'))
+
+class ProfileSettings(MethodView):
+    decorators = [
+        login_required,
+    ]
+
+    def get(self, user_id):
+        user_name = current_user.username
+        image_file = url_for('static', filename='profile_pics/' + 'default.jpg')
+
+        return flask.render_template('profile_settings.html', user_name=user_name, image_file=image_file)
+
+    def post(self):
+        return flask.render_template('profile_settings.html')
