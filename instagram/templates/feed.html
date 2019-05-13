@@ -8,8 +8,8 @@
 <body>
     <ul>
       <li><a href="{{ url_for('feed') }}">Instagram</a></li>
-      <li><a href="#">Profile</a></li>
-      <li><a href="#">Upload</a></li>
+      <li><a href="{{ url_for('profile-photos', user_id=user_id) }}">Profile</a></li>
+      <li><a href="{{ url_for('upload-photo') }}">Upload</a></li>
       <li><a href="#">Settings</a></li>
       <li style="float:right"><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>

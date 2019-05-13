@@ -193,10 +193,12 @@ class Feed(MethodView):
     ]
 
     def get(self):
-        return flask.render_template('feed.html')
+        user_id = current_user.id
+        return flask.render_template('feed.html', user_id=user_id)
 
-    def post(self, user_id):
-        return flask.render_template('feed.html')
+    def post(self):
+        user_id = current_user.id
+        return flask.render_template('feed.html', user_id=user_id)
 
 class Logout(MethodView):
     def get(self):

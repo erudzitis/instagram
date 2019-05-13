@@ -21,3 +21,18 @@ li a {
 li a:hover {
   background-color: #111;
 }
+
+.center-block {
+  display: table;
+  margin: 0 auto;
+}
+
+ul.new-style {
+    text-align: center;
+    background-color: #FFFFFF;
+}
+
+li.new-style {
+    display: inline-block;
+    background-color: #FFFFFF;
+}

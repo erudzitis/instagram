@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-    <img src="{{ photo.url() }}" alt="">
+    <div class="container">
+        <img class="center-block" src="{{ photo.url() }}" alt="">
 
-    <form action="{{ photo.like_url() }}" method="post">
-        <input type="submit" value="{{ photo.likes|length or 0 }}">
-    </form>
+        <form action="{{ photo.like_url() }}" method="post">
+            <input type="submit" value="{{ photo.likes|length or 0 }}">
+        </form>
 
-    <ul>
-        {% for comment in photo.comments %}
-            <li>{{ comment.user.email }}: {{ comment.content }}</li>
-        {% endfor %}
-    </ul>
+        <ul class="new-style">
+            {% for comment in photo.comments %}
+                <li class="new-style">{{ comment.user.email }}: {{ comment.content }}</li>
+            {% endfor %}
+        </ul>
 
-    <form action="{{ photo.comment_url() }}" method="post">
-        <input type="text" name="content">
-        <input type="submit">
-    </form>
+        <form action="{{ photo.comment_url() }}" method="post">
+            <input type="text" name="content">
+            <input type="submit">
+        </form>
+    </div>
 </body>
 </html>
