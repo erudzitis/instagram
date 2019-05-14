@@ -36,3 +36,12 @@ li.new-style {
     display: inline-block;
     background-color: #FFFFFF;
 }
+
+.user-profile {
+  margin: auto;
+  width: 25em;
+  height: 11em;
+  background: #fff;
+  border: 1px solid black;
+  border-radius: 5px;
+}
