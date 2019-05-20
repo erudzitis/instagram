@@ -8,6 +8,7 @@ from flask import Config
 class CoreConfig(Config):
     SECRET_KEY = 'asdasdasd'
     UPLOADS_DIRECTORY = pathlib.Path(__file__).parent.parent / 'uploads'
+    UPLOADS_DIRECTORY2 = pathlib.Path(__file__).parent.parent / 'profile_pics'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

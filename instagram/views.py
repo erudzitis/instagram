@@ -1,7 +1,9 @@
 import flask
-from flask import url_for, redirect
-
+from flask import url_for, redirect, request
+import os
+from PIL import Image
 from flask.views import MethodView
+import secrets
 
 from flask_login import (
     login_user,
@@ -17,7 +19,7 @@ from werkzeug.security import (
 
 from instagram.db import db
 
-from instagram import models
+from instagram import models, application
 
 
 def create_user(user_name, email, password):
@@ -209,6 +211,19 @@ class Logout(MethodView):
         logout_user()
         return redirect(url_for('welcome-page'))
 
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join('C:/Users/PC/Desktop/instagram-git/instagram/static/profile_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
 class ProfileSettings(MethodView):
     decorators = [
         login_required,
@@ -216,9 +231,14 @@ class ProfileSettings(MethodView):
 
     def get(self, user_id):
         user_name = current_user.username
-        image_file = url_for('static', filename='profile_pics/' + 'default.jpg')
-
+        image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         return flask.render_template('profile_settings.html', user_name=user_name, image_file=image_file)
 
-    def post(self):
+    def post(self, user_id):
+        if request.method == "POST":
+            picture_file = flask.request.files['profilepicture']
+            profile_photo = save_picture(picture_file)
+            current_user.image_file = profile_photo
+            db.session.commit()
+            return flask.redirect(url_for('profile-settings', user_id=current_user.id))
         return flask.render_template('profile_settings.html')

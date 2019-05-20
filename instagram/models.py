@@ -8,7 +8,7 @@ class User(db.Model):
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
-
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     photos = db.relationship('Photo', backref='user', lazy=True)
     likes = db.relationship('Like', backref='user', lazy=True)
     comments = db.relationship('Comment', backref='user', lazy=True)
