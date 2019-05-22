@@ -3,11 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
+    <ul>
+      <li><a href="{{ url_for('feed') }}">Instagram</a></li>
+      <li><a href="{{ url_for('profile-photos', user_id=user_id) }}">Profile</a></li>
+      <li><a href="{{ url_for('upload-photo') }}">Upload</a></li>
+      <li><a href="{{ url_for('profile-settings', user_id=user_id) }}">Settings</a></li>
+      <li style="float:right"><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+    <div class="user-profile">
+            <div class="content-section">
+                <div class="media">
+                    <img class="rounded-circle account-img" height="100" width="100" src="{{ image_file }}">
+                    <div class="media-body">
+                        <br>
+                        <h2 class="account-heading">{{ user_name }}</h2>
+                        <form method="post" enctype="multipart/form-data">
+                            Upload profile picture: <small><input type="file" name="profilepicture"></small><br>
+                            <small><input type="submit"></small>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    </div>
     {% for photo in photos %}
-        <a href="{{ photo.detail_url() }}"><img src="{{ photo.url() }}" alt=""></a>
+        <a href="{{ photo.detail_url() }}"><img src="{{ photo.url() }}" width="15%" height="15%" alt=""></a>
 
         <form action="{{ photo.like_url() }}" method="post">
             <input type="submit" value="{{ photo.likes|length or 0 }}">

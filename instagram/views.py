@@ -84,13 +84,28 @@ class UserLoginView(MethodView):
 
 
 class ProfilePhotos(MethodView):
+    decorators = [
+        login_required,
+    ]
+
     def get(self, user_id):
+        user_name = current_user.username
+        image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         user = models.User.query.get(user_id)
 
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id)
+
+    def post(self, user_id):
+        if request.method == "POST":
+            picture_file = flask.request.files['profilepicture']
+            profile_photo = save_picture(picture_file)
+            current_user.image_file = profile_photo
+            db.session.commit()
+            return flask.redirect(url_for('profile-photos', user_id=current_user.id))
+        return flask.render_template('profile-photos.html', user_id=current_user.id)
 
 
 class DetailPhoto(MethodView):
@@ -126,7 +141,7 @@ class UploadPhoto(MethodView):
         db.session.add(photo)
         db.session.commit()
 
-        return 'ok'
+        return redirect(url_for('profile-photos', user_id=current_user.id))
 
 
 class ViewFile(MethodView):
@@ -231,14 +246,9 @@ class ProfileSettings(MethodView):
 
     def get(self, user_id):
         user_name = current_user.username
-        image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-        return flask.render_template('profile_settings.html', user_name=user_name, image_file=image_file)
+        user_id = current_user.id
+        return flask.render_template('profile_settings.html', user_id=user_id, user_name=user_name)
 
     def post(self, user_id):
-        if request.method == "POST":
-            picture_file = flask.request.files['profilepicture']
-            profile_photo = save_picture(picture_file)
-            current_user.image_file = profile_photo
-            db.session.commit()
-            return flask.redirect(url_for('profile-settings', user_id=current_user.id))
-        return flask.render_template('profile_settings.html')
+        user_id = current_user.id
+        return flask.render_template('profile_settings.html', user_id=user_id)
