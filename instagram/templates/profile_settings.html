@@ -7,6 +7,20 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
+    <div class="row">
+        <div class="col-md-8">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+        </div>
+    </div>
+
     <ul>
       <li><a href="{{ url_for('feed') }}">Instagram</a></li>
       <li><a href="{{ url_for('profile-photos', user_id=user_id) }}">Profile</a></li>
@@ -14,6 +28,15 @@
       <li><a href="{{ url_for('profile-settings', user_id=user_id) }}">Settings</a></li>
       <li style="float:right"><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>
-    <h2>SETTINGS FOR {{ user_name }}</h2>
+
+    <div class="container">
+        <h2>SETTINGS</h2>
+        <form method="post">
+            Enter new username : <input type="text" placeholder="{{ user_name }}" name="new_username">
+            <button type="submit">Update</button><br>
+        </form>
+
+        Want to change your password? <a href="">CHANGE PASSWORD</a>
+    </div>
 </body>
 </html>

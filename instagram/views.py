@@ -1,5 +1,5 @@
 import flask
-from flask import url_for, redirect, request
+from flask import url_for, redirect, request, flash
 import os
 from PIL import Image
 from flask.views import MethodView
@@ -251,4 +251,17 @@ class ProfileSettings(MethodView):
 
     def post(self, user_id):
         user_id = current_user.id
+        if request.method == "POST":
+            new_username = flask.request.form['new_username']
+
+            user = models.User.query.filter_by(username=new_username).first()
+
+            if user:
+                flash("Username is taken", category="error")
+            else:
+                if len(new_username) > 0:
+                    current_user.username = new_username
+                    db.session.commit()
+                    return flask.redirect(url_for('profile-settings', user_id=current_user.id))
+
         return flask.render_template('profile_settings.html', user_id=user_id)

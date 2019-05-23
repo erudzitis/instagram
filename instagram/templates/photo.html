@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <img class="center-block" src="{{ photo.url() }}" alt="">
+        <img class="center-block" width="70%" height="70%" src="{{ photo.url() }}" alt="">
 
         <form action="{{ photo.like_url() }}" method="post">
             <input type="submit" value="{{ photo.likes|length or 0 }}">
@@ -16,7 +16,7 @@
 
         <ul class="new-style">
             {% for comment in photo.comments %}
-                <li class="new-style">{{ comment.user.email }}: {{ comment.content }}</li>
+                <li class="new-style">{{ comment.user.username }}: {{ comment.content }}</li>
             {% endfor %}
         </ul>
 

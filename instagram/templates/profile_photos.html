@@ -30,11 +30,15 @@
             </div>
     </div>
     {% for photo in photos %}
-        <a href="{{ photo.detail_url() }}"><img src="{{ photo.url() }}" width="15%" height="15%" alt=""></a>
+        <div class="">
+            <div class="">
+                <a href="{{ photo.detail_url() }}"><img src="{{ photo.url() }}" width="15%" height="15%" alt=""></a>
 
-        <form action="{{ photo.like_url() }}" method="post">
-            <input type="submit" value="{{ photo.likes|length or 0 }}">
-        </form>
+                <form action="{{ photo.like_url() }}" method="post">
+                    <input type="submit" value="{{ photo.likes|length or 0 }}">
+                </form>
+            </div>
+        </div>
     {% endfor %}
 </body>
 </html>
