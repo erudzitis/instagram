@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Settings</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Title</title>
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="row">
@@ -20,7 +21,6 @@
           {% endwith %}
         </div>
     </div>
-
     <ul>
       <li><a href="{{ url_for('feed') }}">Instagram</a></li>
       <li><a href="{{ url_for('profile-photos', user_id=user_id) }}">Profile</a></li>
@@ -28,15 +28,11 @@
       <li><a href="{{ url_for('profile-settings', user_id=user_id) }}">Settings</a></li>
       <li style="float:right"><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>
-
     <div class="container">
-        <h2>SETTINGS</h2><br>
         <form method="post">
-            <fieldset>
-                Want to edit your username? <a href="{{ url_for('edit-username', user_id=user_id) }}">EDIT USERNAME</a><br>
-
-                Want to change your password? <a href="{{ url_for('change-password', user_id=user_id) }}">CHANGE PASSWORD</a>
-            </fieldset>
+            <h1>EDIT USERNAME</h1>
+            Enter new username : <input type="text" placeholder="{{ user_name }}" name="new_username">
+            <button type="submit">Update</button><br>
         </form>
     </div>
 </body>

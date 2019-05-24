@@ -251,6 +251,20 @@ class ProfileSettings(MethodView):
 
     def post(self, user_id):
         user_id = current_user.id
+        return flask.render_template('profile_settings.html', user_id=user_id)
+
+class EditUsername(MethodView):
+    decorators = [
+        login_required,
+    ]
+
+    def get(self, user_id):
+        user_id = current_user.id
+        user_name = current_user.username
+        return flask.render_template('edit_username.html', user_id=user_id, user_name=user_name)
+
+    def post(self, user_id):
+        user_id = current_user.id
         if request.method == "POST":
             new_username = flask.request.form['new_username']
 
@@ -264,4 +278,35 @@ class ProfileSettings(MethodView):
                     db.session.commit()
                     return flask.redirect(url_for('profile-settings', user_id=current_user.id))
 
-        return flask.render_template('profile_settings.html', user_id=user_id)
+        return flask.render_template('edit_username.html', user_id=user_id)
+
+class ChangePassword(MethodView):
+    decorators = [
+        login_required,
+    ]
+
+    def get(self, user_id):
+        user_name = current_user.username
+        user_id = current_user.id
+        return flask.render_template('change_password.html', user_id=user_id, user_name=user_name)
+
+    def post(self, user_id):
+        if request.method == "POST":
+            current_password = flask.request.form["currentpassword"]
+            new_password = flask.request.form["newpassword"]
+
+            user = models.User.query.filter_by(username=current_user.username).first()
+
+            if user:
+                is_correct = check_password_hash(
+                    pwhash=user.password,
+                    password=current_password,
+                )
+
+                if is_correct:
+                    hashed_password = generate_password_hash(new_password)
+                    current_user.password = hashed_password
+                    db.session.commit()
+                    return flask.redirect(url_for('profile-settings', user_id=user_id))
+                else:
+                    return 'wrong password'

@@ -80,4 +80,14 @@ def create_application(configuration):
         view_func=views.ProfileSettings.as_view('profile-settings'),
     )
 
+    application.add_url_rule(
+        rule='/change_password/<user_id>/',
+        view_func=views.ChangePassword.as_view('change-password'),
+    )
+
+    application.add_url_rule(
+        rule='/edit_username/<user_id>/',
+        view_func=views.EditUsername.as_view('edit-username'),
+    )
+
     return application
