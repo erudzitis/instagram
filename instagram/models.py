@@ -86,3 +86,7 @@ class Comment(db.Model):
     photo_id = db.Column(db.Integer, db.ForeignKey('photo.id'), nullable=False)
 
     content = db.Column(db.String, nullable=False)
+
+class Followers(db.Model):
+    follower_id =
+    followed_id =
