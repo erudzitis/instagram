@@ -13,6 +13,9 @@
       <li><a href="{{ url_for('upload-photo') }}">Upload</a></li>
       <li><a href="{{ url_for('profile-settings', user_id=user_id) }}">Settings</a></li>
       <li style="float:right"><a href="{{ url_for('logout') }}">Logout</a></li>
+      <form method="post">
+          <input class="searchbar" type="text" name="searchbar" placeholder="Search...">
+      </form>
     </ul>
 </body>
 </html>

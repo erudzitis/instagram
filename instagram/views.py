@@ -215,6 +215,8 @@ class Feed(MethodView):
 
     def post(self):
         user_id = current_user.id
+        if request.method == 'POST':
+            search = flask.request.form['searchbar']
         return flask.render_template('feed.html', user_id=user_id)
 
 class Logout(MethodView):

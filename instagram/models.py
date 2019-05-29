@@ -12,6 +12,7 @@ class User(db.Model):
     photos = db.relationship('Photo', backref='user', lazy=True)
     likes = db.relationship('Like', backref='user', lazy=True)
     comments = db.relationship('Comment', backref='user', lazy=True)
+    #followers = db.relationship('Follower', backref='user', lazy=True)
 
     @property
     def is_authenticated(self):
@@ -87,6 +88,6 @@ class Comment(db.Model):
 
     content = db.Column(db.String, nullable=False)
 
-class Followers(db.Model):
-    follower_id =
-    followed_id =
+#class Follower(db.Model):
+    #follower_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    #followed_id = db.Column(db.Integer, db.ForeignKey('user.id'))
