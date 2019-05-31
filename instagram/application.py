@@ -90,4 +90,10 @@ def create_application(configuration):
         view_func=views.EditUsername.as_view('edit-username'),
     )
 
+    application.add_url_rule(
+        rule='/search/<user_id>/',
+        view_func=views.SearchedUsers.as_view('searched-users'),
+    )
+
+
     return application

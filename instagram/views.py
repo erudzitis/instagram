@@ -4,6 +4,7 @@ import os
 from PIL import Image
 from flask.views import MethodView
 import secrets
+from instagram.forms import Form1
 
 from flask_login import (
     login_user,
@@ -204,6 +205,7 @@ class WelcomePage(MethodView):
     def post(self):
         return flask.render_template('welcome_page.html')
 
+
 class Feed(MethodView):
     decorators = [
         login_required,
@@ -211,13 +213,38 @@ class Feed(MethodView):
 
     def get(self):
         user_id = current_user.id
-        return flask.render_template('feed.html', user_id=user_id)
+        form = Form1(request.form)
+        return flask.render_template('feed.html', user_id=user_id, form=form)
 
     def post(self):
         user_id = current_user.id
-        if request.method == 'POST':
-            search = flask.request.form['searchbar']
-        return flask.render_template('feed.html', user_id=user_id)
+
+        form = Form1(request.form)
+
+        if request.method == "POST" and form.validate_on_submit():
+            searched_username = form.name.data
+            user = models.User.query.filter_by(username=searched_username).first()
+
+            if user:
+                user_id = str(user.id)
+
+                return flask.redirect(url_for('searched-users', user_id=user_id))
+
+
+        return flask.render_template('feed.html', user_id=user_id, form=form)
+
+class SearchedUsers(MethodView):
+    def get(self, user_id):
+        user = models.User.query.filter_by(id=user_id).first()
+
+        if user:
+            username = user.username
+            return flask.render_template('searched_users.html', username=username, user_id=user_id)
+
+        return flask.render_template('searched_users.html')
+
+    def post(self, user_id):
+        return flask.render_template('searched_users.html')
 
 class Logout(MethodView):
     def get(self):
