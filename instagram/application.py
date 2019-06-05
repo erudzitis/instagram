@@ -95,5 +95,9 @@ def create_application(configuration):
         view_func=views.SearchedUsers.as_view('searched-users'),
     )
 
+    application.add_url_rule(
+        rule='/searched_profile/<user_id>/',
+        view_func=views.SearchedProfile.as_view('searched-profile'),
+    )
 
     return application

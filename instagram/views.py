@@ -108,6 +108,23 @@ class ProfilePhotos(MethodView):
             return flask.redirect(url_for('profile-photos', user_id=current_user.id))
         return flask.render_template('profile-photos.html', user_id=current_user.id)
 
+class SearchedProfile(MethodView):
+
+    def get(self, user_id):
+        user = models.User.query.get(user_id)
+
+        user_name = user.username
+        image_file = url_for('static', filename='profile_pics/' + user.image_file)
+
+
+        if user is None:
+            return 'Profile not found', 404
+
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id)
+
+    def post(self, user_id):
+        pass
+
 
 class DetailPhoto(MethodView):
     def get(self, photo_id):
