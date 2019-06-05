@@ -10,4 +10,4 @@ configuration = os.environ['APPLICATION_CONFIG_FILE']
 
 application = create_application(configuration=configuration)
 
-logger.info("Hello world")
+logger.info("Hello World")
