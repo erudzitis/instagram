@@ -97,7 +97,7 @@ class ProfilePhotos(MethodView):
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user)
 
     def post(self, user_id):
         if request.method == "POST":
@@ -120,7 +120,7 @@ class SearchedProfile(MethodView):
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user)
 
     def post(self, user_id):
         pass
