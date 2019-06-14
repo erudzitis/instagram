@@ -12,7 +12,17 @@ class User(db.Model):
     photos = db.relationship('Photo', backref='user', lazy=True)
     likes = db.relationship('Like', backref='user', lazy=True)
     comments = db.relationship('Comment', backref='user', lazy=True)
-    #followers = db.relationship('Follower', backref='user', lazy=True)
+
+    followers = db.Table('followers',
+        db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+        db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+    )
+
+    followed = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
     @property
     def is_authenticated(self):
@@ -88,6 +98,8 @@ class Comment(db.Model):
 
     content = db.Column(db.String, nullable=False)
 
-#class Follower(db.Model):
-    #follower_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    #followed_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+#followers = db.Table('followers',
+    #db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+    #db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+#)

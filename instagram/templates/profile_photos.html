@@ -30,7 +30,10 @@
                         {% endif %}
 
                         {% if current_user.id != user.id %}
-                            <button name="follow">Follow</button>
+                            <form method="post">
+                                {{ form.csrf_token }}
+                                {{ form.follow_button() }}
+                            </form>
                         {% else %}
                         {% endif %}
                     </div>

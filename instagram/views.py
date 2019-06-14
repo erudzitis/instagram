@@ -4,7 +4,7 @@ import os
 from PIL import Image
 from flask.views import MethodView
 import secrets
-from instagram.forms import Form1
+from instagram.forms import Form1, FollowButtonForm
 
 from flask_login import (
     login_user,
@@ -111,6 +111,7 @@ class ProfilePhotos(MethodView):
 class SearchedProfile(MethodView):
 
     def get(self, user_id):
+        form = FollowButtonForm(request.form)
         user = models.User.query.get(user_id)
 
         user_name = user.username
@@ -120,10 +121,19 @@ class SearchedProfile(MethodView):
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, form=form)
 
     def post(self, user_id):
-        pass
+        user = models.User.query.get(user_id)
+        form = FollowButtonForm(request.form)
+
+        if request.method == "POST" and form.validate_on_submit():
+            user.followed.append(current_user)
+
+
+            return f'{current_user.id} is now following {user.id}'
+
+        return flask.render_template('profile-photos.html', form=form)
 
 
 class DetailPhoto(MethodView):
