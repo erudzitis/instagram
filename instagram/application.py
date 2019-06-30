@@ -100,4 +100,14 @@ def create_application(configuration):
         view_func=views.SearchedProfile.as_view('searched-profile'),
     )
 
+    application.add_url_rule(
+        rule='/follow/<username>/',
+        view_func=views.FollowWiew.as_view('follow-page'),
+    )
+
+    application.add_url_rule(
+        rule='/unfollow/<username>/',
+        view_func=views.UnfollowWiew.as_view('unfollow-page'),
+    )
+
     return application

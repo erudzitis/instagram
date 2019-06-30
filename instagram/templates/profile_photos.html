@@ -26,16 +26,13 @@
                                 Upload profile picture: <small><input type="file" name="profilepicture"></small><br>
                                 <small><input type="submit"></small><br>
                             </form>
+                        {% elif not current_user.is_following(user) %}
+                            <p><a href="{{ url_for('follow-page', username=user.username) }}">Follow</a></p>
                         {% else %}
+                            <p><a href="{{ url_for('unfollow-page', username=user.username) }}">Unfollow</a></p>
                         {% endif %}
 
-                        {% if current_user.id != user.id %}
-                            <form method="post">
-                                {{ form.csrf_token }}
-                                {{ form.follow_button() }}
-                            </form>
-                        {% else %}
-                        {% endif %}
+
                     </div>
                 </div>
             </div>

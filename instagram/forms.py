@@ -7,3 +7,6 @@ class Form1(FlaskForm):
 
 class FollowButtonForm(FlaskForm):
     follow_button = SubmitField('Follow')
+
+class UnfollowButtonForm(FlaskForm):
+    follow_button = SubmitField('Unfollow')

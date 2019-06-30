@@ -13,12 +13,19 @@
       <li><a href="{{ url_for('upload-photo') }}">Upload</a></li>
       <li><a href="{{ url_for('profile-settings', user_id=user_id) }}">Settings</a></li>
       <li style="float:right"><a href="{{ url_for('logout') }}">Logout</a></li>
+
+      <div style="margin-top:10px; float:right">
+          <form method="post" action="">
+            {{ form.csrf_token }}
+            {{ form.name.label }}
+            {{ form.name(size=30) }}
+            {{ form.search() }}
+          </form>
+      </div>
     </ul>
-    <form method="post" action="">
-        {{ form.csrf_token }}
-        {{ form.name.label }}
-        {{ form.name(size=30) }}
-        {{ form.search() }}
-    </form>
+
+    {% for post in posts %}
+        <a href="{{ post.detail_url() }}"><img src="{{ post.url() }}" width="15%" height="15%" alt="">
+    {% endfor %}
 </body>
 </html>

@@ -4,7 +4,7 @@ import os
 from PIL import Image
 from flask.views import MethodView
 import secrets
-from instagram.forms import Form1, FollowButtonForm
+from instagram.forms import Form1, FollowButtonForm, UnfollowButtonForm
 
 from flask_login import (
     login_user,
@@ -20,7 +20,7 @@ from werkzeug.security import (
 
 from instagram.db import db
 
-from instagram import models, application
+from instagram import models
 
 
 def create_user(user_name, email, password):
@@ -90,6 +90,9 @@ class ProfilePhotos(MethodView):
     ]
 
     def get(self, user_id):
+        form = FollowButtonForm()
+        form2 = UnfollowButtonForm()
+
         user_name = current_user.username
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         user = models.User.query.get(user_id)
@@ -97,22 +100,26 @@ class ProfilePhotos(MethodView):
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, form=form, form2=form2)
 
     def post(self, user_id):
+        form = FollowButtonForm()
+        form2 = UnfollowButtonForm()
+
         if request.method == "POST":
             picture_file = flask.request.files['profilepicture']
             profile_photo = save_picture(picture_file)
             current_user.image_file = profile_photo
             db.session.commit()
             return flask.redirect(url_for('profile-photos', user_id=current_user.id))
-        return flask.render_template('profile-photos.html', user_id=current_user.id)
+        return flask.render_template('profile_photos.html', user_id=current_user.id, form=form, form2=form2)
 
 class SearchedProfile(MethodView):
 
     def get(self, user_id):
         form = FollowButtonForm(request.form)
         user = models.User.query.get(user_id)
+        form2 = UnfollowButtonForm(request.form)
 
         user_name = user.username
         image_file = url_for('static', filename='profile_pics/' + user.image_file)
@@ -121,23 +128,63 @@ class SearchedProfile(MethodView):
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, form=form)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, form=form, form2=form2)
 
     def post(self, user_id):
         user = models.User.query.get(user_id)
         form = FollowButtonForm(request.form)
+        form2 = UnfollowButtonForm(request.form)
+
+        user_name = user.username
+        image_file = url_for('static', filename='profile_pics/' + user.image_file)
 
         if request.method == "POST" and form.validate_on_submit():
-            user.followed.append(current_user)
+            return redirect(url_for('follow-page', username=user_name))
+
+        elif request.method == "POST" and form2.validate_on_submit():
+            return redirect(url_for('unfollow-page', username=user_name))
+
+        else:
+            return flask.render_template('profile_photos.html', user=user, form=form, form2=form2, user_name=user_name,
+                                         image_file=image_file)
 
 
-            return f'{current_user.id} is now following {user.id}'
+class FollowWiew(MethodView):
+    def get(self, username):
 
-        return flask.render_template('profile-photos.html', form=form)
+        user = models.User.query.filter_by(username=username).first()
+
+        if user == current_user:
+            return 'You cannot follow yourself!'
+
+        current_user.follow(user)
+        db.session.commit()
+
+        return 'You are following {}.'.format(username)
+
+    def post(self, username):
+        pass
+
+
+class UnfollowWiew(MethodView):
+    def get(self, username):
+        user = models.User.query.filter_by(username=username).first()
+
+        if user == current_user:
+            return 'You cannot unfollow yourself!'
+
+        current_user.unfollow(user)
+        db.session.commit()
+        return 'You are not following {}.'.format(username)
+
+    def post(self, username):
+        pass
+
 
 
 class DetailPhoto(MethodView):
     def get(self, photo_id):
+
         photo = models.Photo.query.get(photo_id)
 
         return flask.render_template(
@@ -152,9 +199,13 @@ class UploadPhoto(MethodView):
     ]
 
     def get(self):
-        return flask.render_template('upload_photo.html')
+        form = FollowButtonForm()
+        form2 = UnfollowButtonForm()
+
+        return flask.render_template('upload_photo.html', form2=form2, form=form)
 
     def post(self):
+
         file = flask.request.files['photo']
 
         file_name = flask.current_app.config['UPLOADS_DIRECTORY'] / file.filename
@@ -200,8 +251,8 @@ class AddLike(MethodView):
         photo = models.Photo.query.get(photo_id)
 
         redirect_url = flask.url_for(
-            endpoint='profile-photos',
-            user_id=photo.user_id,
+            endpoint='photo-detail',
+            photo_id=photo.id,
         )
 
         return flask.redirect(redirect_url)
@@ -239,14 +290,17 @@ class Feed(MethodView):
     ]
 
     def get(self):
+        posts = current_user.followed_posts().all()
         user_id = current_user.id
         form = Form1(request.form)
-        return flask.render_template('feed.html', user_id=user_id, form=form)
+        return flask.render_template('feed.html', user_id=user_id, form=form, posts=posts)
 
     def post(self):
         user_id = current_user.id
 
         form = Form1(request.form)
+
+        posts = current_user.followed_posts().all()
 
         if request.method == "POST" and form.validate_on_submit():
             searched_username = form.name.data
@@ -258,7 +312,7 @@ class Feed(MethodView):
                 return flask.redirect(url_for('searched-users', user_id=user_id))
 
 
-        return flask.render_template('feed.html', user_id=user_id, form=form)
+        return flask.render_template('feed.html', user_id=user_id, form=form, posts=posts)
 
 class SearchedUsers(MethodView):
     def get(self, user_id):
