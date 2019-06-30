@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="container">
+        <a href="{{ url_for('searched-users', user_id=photo.user_id) }}">{{ photo.user.username }}</a>
         <img class="center-block" width="70%" height="70%" src="{{ photo.url() }}" alt="">
 
         <form action="{{ photo.like_url() }}" method="post">

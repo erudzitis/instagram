@@ -185,6 +185,7 @@ class UnfollowWiew(MethodView):
 class DetailPhoto(MethodView):
     def get(self, photo_id):
 
+
         photo = models.Photo.query.get(photo_id)
 
         return flask.render_template(
@@ -319,8 +320,7 @@ class SearchedUsers(MethodView):
         user = models.User.query.filter_by(id=user_id).first()
 
         if user:
-            username = user.username
-            return flask.render_template('searched_users.html', username=username, user_id=user_id)
+            return redirect(url_for('searched-profile', user_id=user_id))
 
         return flask.render_template('searched_users.html')
 
