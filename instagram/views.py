@@ -4,7 +4,7 @@ import os
 from PIL import Image
 from flask.views import MethodView
 import secrets
-from instagram.forms import Form1, FollowButtonForm, UnfollowButtonForm
+from instagram.forms import Form1
 
 from flask_login import (
     login_user,
@@ -90,9 +90,6 @@ class ProfilePhotos(MethodView):
     ]
 
     def get(self, user_id):
-        form = FollowButtonForm()
-        form2 = UnfollowButtonForm()
-
         user_name = current_user.username
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         user = models.User.query.get(user_id)
@@ -100,26 +97,21 @@ class ProfilePhotos(MethodView):
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, form=form, form2=form2)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user)
 
     def post(self, user_id):
-        form = FollowButtonForm()
-        form2 = UnfollowButtonForm()
-
         if request.method == "POST":
             picture_file = flask.request.files['profilepicture']
             profile_photo = save_picture(picture_file)
             current_user.image_file = profile_photo
             db.session.commit()
             return flask.redirect(url_for('profile-photos', user_id=current_user.id))
-        return flask.render_template('profile_photos.html', user_id=current_user.id, form=form, form2=form2)
+        return flask.render_template('profile_photos.html', user_id=current_user.id)
 
 class SearchedProfile(MethodView):
 
     def get(self, user_id):
-        form = FollowButtonForm(request.form)
         user = models.User.query.get(user_id)
-        form2 = UnfollowButtonForm(request.form)
 
         user_name = user.username
         image_file = url_for('static', filename='profile_pics/' + user.image_file)
@@ -128,24 +120,15 @@ class SearchedProfile(MethodView):
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, form=form, form2=form2)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user)
 
     def post(self, user_id):
         user = models.User.query.get(user_id)
-        form = FollowButtonForm(request.form)
-        form2 = UnfollowButtonForm(request.form)
 
         user_name = user.username
         image_file = url_for('static', filename='profile_pics/' + user.image_file)
 
-        if request.method == "POST" and form.validate_on_submit():
-            return redirect(url_for('follow-page', username=user_name))
-
-        elif request.method == "POST" and form2.validate_on_submit():
-            return redirect(url_for('unfollow-page', username=user_name))
-
-        else:
-            return flask.render_template('profile_photos.html', user=user, form=form, form2=form2, user_name=user_name,
+        return flask.render_template('profile_photos.html', user=user, user_name=user_name,
                                          image_file=image_file)
 
 
@@ -200,10 +183,8 @@ class UploadPhoto(MethodView):
     ]
 
     def get(self):
-        form = FollowButtonForm()
-        form2 = UnfollowButtonForm()
 
-        return flask.render_template('upload_photo.html', form2=form2, form=form)
+        return flask.render_template('upload_photo.html')
 
     def post(self):
 
