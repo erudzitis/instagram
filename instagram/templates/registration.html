@@ -3,14 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <title>Registration</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
-    <body>
-        <h1>REGISTER</h1>
-        <form method="post">
-            User Name: <input type="text" name="user_name"><br/>
-            Email: <input type="email" name="email"><br/>
-            Password: <input type="password" name="password"><br/>
+    <body class="login-body">
+        <form method="post" class="box">
+            <h1>REGISTER</h1>
+            <input type="text" name="user_name" placeholder="Username">
+            <input type="email" name="email" placeholder="E-mail">
+            <input type="password" name="password" placeholder="Password">
 
             <input type="submit">
             <small><a href="{{ url_for('login') }}">Already have an account?</a></small>

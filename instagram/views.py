@@ -45,15 +45,18 @@ class UserRegistrationView(MethodView):
         email = flask.request.form['email']
         password = flask.request.form['password']
 
-        hashed_password = generate_password_hash(password)
+        if user_name and email and password:
+            hashed_password = generate_password_hash(password)
 
-        create_user(
-            user_name=user_name,
-            email=email,
-            password=hashed_password,
-        )
+            create_user(
+                user_name=user_name,
+                email=email,
+                password=hashed_password,
+            )
 
-        return flask.redirect(url_for('login'))
+            return flask.redirect(url_for('login'))
+        else:
+            return 'Enter all credentials'
 
 class UserLoginView(MethodView):
     def get(self):
