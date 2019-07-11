@@ -97,10 +97,13 @@ class ProfilePhotos(MethodView):
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         user = models.User.query.get(user_id)
 
+        follower_count = user.followers.count()
+        following_count = user.followed.count()
+
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, follower_count=follower_count, following_count=following_count)
 
     def post(self, user_id):
         if request.method == "POST":
@@ -119,11 +122,13 @@ class SearchedProfile(MethodView):
         user_name = user.username
         image_file = url_for('static', filename='profile_pics/' + user.image_file)
 
+        follower_count = user.followers.count()
+        following_count = user.followed.count()
 
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, following_count=following_count, follower_count=follower_count)
 
     def post(self, user_id):
         user = models.User.query.get(user_id)
