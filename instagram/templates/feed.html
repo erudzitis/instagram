@@ -23,9 +23,12 @@
           </form>
       </div>
     </ul>
-
-    {% for post in posts %}
-        <a href="{{ post.detail_url() }}"><img src="{{ post.url() }}" width="15%" height="15%" alt="">
-    {% endfor %}
+    <header>
+        <div>
+            {% for post in posts %}
+                <a href="{{ post.detail_url() }}"><img src="{{ post.url() }}" width="15%" height="15%" alt=""></a>
+            {% endfor %}
+        </div>
+    </header>
 </body>
 </html>
