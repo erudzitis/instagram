@@ -5,3 +5,6 @@ class Form1(FlaskForm):
     name = StringField('')
     search = SubmitField('search')
 
+class EditProfile(FlaskForm):
+    edit = SubmitField('Edit')
+

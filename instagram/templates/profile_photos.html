@@ -17,12 +17,12 @@
     <div class="user-profile">
             <div class="content-section">
                 <div class="media">
-                    <small>Followers: {{ follower_count }}</small>
-                    <small>Following: {{ following_count }}</small>
                     <img class="rounded-circle account-img" height="100" width="100" src="{{ image_file }}">
                     <div class="media-body">
                         <br>
-                        <h2 class="account-heading">{{ user_name }}</h2>
+                        <h2 style="text-align:left;float:left;" class="account-heading">{{ user_name }}</h2>
+                        <small>Followers: {{ follower_count }}</small>
+                        <small>Following: {{ following_count }}</small>
                         {% if current_user.id == user.id %}
                             <form method="post" enctype="multipart/form-data">
                                 Upload profile picture: <small><input type="file" name="profilepicture"></small><br>

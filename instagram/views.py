@@ -4,7 +4,7 @@ import os
 from PIL import Image
 from flask.views import MethodView
 import secrets
-from instagram.forms import Form1
+from instagram.forms import Form1, EditProfile
 
 from flask_login import (
     login_user,
