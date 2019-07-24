@@ -11,6 +11,7 @@
       <li><a href="{{ url_for('feed') }}">Instagram</a></li>
       <li><a href="{{ url_for('profile-photos', user_id=user_id) }}">Profile</a></li>
       <li><a href="{{ url_for('upload-photo') }}">Upload</a></li>
+      <li><a href="{{ url_for('send-message', user_id=current_user.id) }}">Private Messages</a></li>
       <li><a href="{{ url_for('profile-settings', user_id=user_id) }}">Settings</a></li>
       <li style="float:right"><a href="{{ url_for('logout') }}">Logout</a></li>
 

@@ -110,4 +110,10 @@ def create_application(configuration):
         view_func=views.UnfollowWiew.as_view('unfollow-page'),
     )
 
+    application.add_url_rule(
+        rule='/send_message/<user_id>/',
+        view_func=views.SendMessageView.as_view('send-message'),
+    )
+
+
     return application

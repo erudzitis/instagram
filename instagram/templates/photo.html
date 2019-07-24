@@ -17,7 +17,7 @@
 
         <ul class="new-style">
             {% for comment in photo.comments %}
-                <li class="new-style"><b>{{ comment.user.username }}</b>: {{ comment.content }}</li><br>
+            <li class="new-style"><b>{{ comment.user.username }}</b>: {{ comment.content }}</li><br>
             {% endfor %}
         </ul>
 

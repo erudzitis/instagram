@@ -409,3 +409,12 @@ class ChangePassword(MethodView):
                     return flask.redirect(url_for('profile-settings', user_id=user_id))
                 else:
                     return 'wrong password'
+
+class SendMessageView(MethodView):
+    def get(self, user_id):
+        user = models.User.query.filter_by(id=current_user.id).first()
+        friends = user.followed.all()
+        return flask.render_template('send_message.html', friends=friends)
+
+    def post(self):
+        pass

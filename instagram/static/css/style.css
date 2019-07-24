@@ -35,6 +35,7 @@ ul.new-style {
 li.new-style {
     display: inline-block;
     background-color: #FFFFFF;
+    float: left;
 }
 
 .user-profile {
