@@ -31,7 +31,7 @@
                         {% elif not current_user.is_following(user) %}
                             <p><a href="{{ url_for('follow-page', username=user.username) }}">Follow</a></p>
                         {% else %}
-                            <a href="{{ url_for('send-message', user_id=current_user.id) }}"><button>Send message</button></a>
+                            <a href="{{ url_for('send-message', user_id=user_id2) }}"><button>Send message</button></a>
                             <p><a href="{{ url_for('unfollow-page', username=user.username) }}">Unfollow</a></p>
                         {% endif %}
 

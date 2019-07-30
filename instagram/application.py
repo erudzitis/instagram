@@ -111,6 +111,11 @@ def create_application(configuration):
     )
 
     application.add_url_rule(
+        rule='/private_message/<user_id>/',
+        view_func=views.PrivateMessageView.as_view('private-message'),
+    )
+
+    application.add_url_rule(
         rule='/send_message/<user_id>/',
         view_func=views.SendMessageView.as_view('send-message'),
     )

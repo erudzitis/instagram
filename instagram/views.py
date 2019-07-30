@@ -125,10 +125,11 @@ class SearchedProfile(MethodView):
         follower_count = user.followers.count()
         following_count = user.followed.count()
 
+
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, following_count=following_count, follower_count=follower_count)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, following_count=following_count, follower_count=follower_count, user_id2=user_id)
 
     def post(self, user_id):
         user = models.User.query.get(user_id)
@@ -410,11 +411,20 @@ class ChangePassword(MethodView):
                 else:
                     return 'wrong password'
 
-class SendMessageView(MethodView):
-    def get(self, user_id):
+class PrivateMessageView(MethodView):
+    def get(self, user_id, user_id2):
         user = models.User.query.filter_by(id=current_user.id).first()
         friends = user.followed.all()
-        return flask.render_template('send_message.html', friends=friends)
+        return flask.render_template('private_message.html', friends=friends)
+
+    def post(self):
+        pass
+
+class SendMessageView(MethodView):
+    def get(self, user_id):
+        user = models.User.query.filter_by(id=user_id).first()
+        username = user.username
+        return flask.render_template('send_message.html', username=username)
 
     def post(self):
         pass
