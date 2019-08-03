@@ -412,7 +412,7 @@ class ChangePassword(MethodView):
                     return 'wrong password'
 
 class PrivateMessageView(MethodView):
-    def get(self, user_id, user_id2):
+    def get(self, user_id):
         user = models.User.query.filter_by(id=current_user.id).first()
         friends = user.followed.all()
         return flask.render_template('private_message.html', friends=friends)
