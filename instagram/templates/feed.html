@@ -11,7 +11,13 @@
       <li><a href="{{ url_for('feed') }}">Instagram</a></li>
       <li><a href="{{ url_for('profile-photos', user_id=user_id) }}">Profile</a></li>
       <li><a href="{{ url_for('upload-photo') }}">Upload</a></li>
-      <li><a href="{{ url_for('private-message', user_id=user_id) }}">Private Messages</a></li>
+      <li><a href="{{ url_for('private-message', user_id=user_id) }}">Private Messages
+            {% set new_messages = current_user.new_messages() %}
+            {% if new_messages %}
+            <span class="badge">{{ new_messages }}</span>
+            {% endif %}
+          </a>
+      </li>
       <li><a href="{{ url_for('profile-settings', user_id=user_id) }}">Settings</a></li>
       <li style="float:right"><a href="{{ url_for('logout') }}">Logout</a></li>
 

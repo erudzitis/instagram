@@ -5,6 +5,7 @@ from PIL import Image
 from flask.views import MethodView
 import secrets
 from instagram.forms import Form1, EditProfile
+import datetime
 
 from flask_login import (
     login_user,
@@ -58,6 +59,7 @@ class UserRegistrationView(MethodView):
         else:
             return 'Enter all credentials'
 
+
 class UserLoginView(MethodView):
     def get(self):
         return flask.render_template('login.html')
@@ -103,7 +105,9 @@ class ProfilePhotos(MethodView):
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, follower_count=follower_count, following_count=following_count)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name,
+                                     image_file=image_file, user_id=current_user.id, user=user,
+                                     follower_count=follower_count, following_count=following_count)
 
     def post(self, user_id):
         if request.method == "POST":
@@ -113,6 +117,7 @@ class ProfilePhotos(MethodView):
             db.session.commit()
             return flask.redirect(url_for('profile-photos', user_id=current_user.id))
         return flask.render_template('profile_photos.html', user_id=current_user.id)
+
 
 class SearchedProfile(MethodView):
 
@@ -125,11 +130,12 @@ class SearchedProfile(MethodView):
         follower_count = user.followers.count()
         following_count = user.followed.count()
 
-
         if user is None:
             return 'Profile not found', 404
 
-        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name, image_file=image_file, user_id=current_user.id, user=user, following_count=following_count, follower_count=follower_count, user_id2=user_id)
+        return flask.render_template('profile_photos.html', photos=user.photos, user_name=user_name,
+                                     image_file=image_file, user_id=current_user.id, user=user,
+                                     following_count=following_count, follower_count=follower_count, user_id2=user_id)
 
     def post(self, user_id):
         user = models.User.query.get(user_id)
@@ -138,12 +144,11 @@ class SearchedProfile(MethodView):
         image_file = url_for('static', filename='profile_pics/' + user.image_file)
 
         return flask.render_template('profile_photos.html', user=user, user_name=user_name,
-                                         image_file=image_file)
+                                     image_file=image_file)
 
 
 class FollowWiew(MethodView):
     def get(self, username):
-
         user = models.User.query.filter_by(username=username).first()
 
         if user == current_user:
@@ -173,11 +178,8 @@ class UnfollowWiew(MethodView):
         pass
 
 
-
 class DetailPhoto(MethodView):
     def get(self, photo_id):
-
-
         photo = models.Photo.query.get(photo_id)
 
         return flask.render_template(
@@ -192,11 +194,9 @@ class UploadPhoto(MethodView):
     ]
 
     def get(self):
-
         return flask.render_template('upload_photo.html')
 
     def post(self):
-
         file = flask.request.files['photo']
 
         file_name = flask.current_app.config['UPLOADS_DIRECTORY'] / file.filename
@@ -267,6 +267,7 @@ class AddComment(MethodView):
 
         return flask.redirect(redirect_url)
 
+
 class WelcomePage(MethodView):
     def get(self):
         return flask.render_template('welcome_page.html')
@@ -302,8 +303,8 @@ class Feed(MethodView):
 
                 return flask.redirect(url_for('searched-users', user_id=user_id))
 
-
         return flask.render_template('feed.html', user_id=user_id, form=form, posts=posts)
+
 
 class SearchedUsers(MethodView):
     def get(self, user_id):
@@ -317,6 +318,7 @@ class SearchedUsers(MethodView):
     def post(self, user_id):
         return flask.render_template('searched_users.html')
 
+
 class Logout(MethodView):
     def get(self):
         logout_user()
@@ -325,6 +327,7 @@ class Logout(MethodView):
     def post(self):
         logout_user()
         return redirect(url_for('welcome-page'))
+
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
@@ -339,6 +342,7 @@ def save_picture(form_picture):
 
     return picture_fn
 
+
 class ProfileSettings(MethodView):
     decorators = [
         login_required,
@@ -352,6 +356,7 @@ class ProfileSettings(MethodView):
     def post(self, user_id):
         user_id = current_user.id
         return flask.render_template('profile_settings.html', user_id=user_id)
+
 
 class EditUsername(MethodView):
     decorators = [
@@ -379,6 +384,7 @@ class EditUsername(MethodView):
                     return flask.redirect(url_for('profile-settings', user_id=current_user.id))
 
         return flask.render_template('edit_username.html', user_id=user_id)
+
 
 class ChangePassword(MethodView):
     decorators = [
@@ -411,6 +417,7 @@ class ChangePassword(MethodView):
                 else:
                     return 'wrong password'
 
+
 class PrivateMessageView(MethodView):
     def get(self, user_id):
         user = models.User.query.filter_by(id=current_user.id).first()
@@ -420,11 +427,34 @@ class PrivateMessageView(MethodView):
     def post(self):
         pass
 
+
 class SendMessageView(MethodView):
     def get(self, user_id):
         user = models.User.query.filter_by(id=user_id).first()
         username = user.username
+
+        current_user.last_message_read_time = datetime.datetime.utcnow()
+        db.session.commit()
+
+        messages = current_user.messages_received.order_by(
+            models.Message.timestamp.desc())
+
+        return flask.render_template('send_message.html', user=user, messages=messages)
+
+    def post(self, user_id):
+        user = models.User.query.filter_by(id=user_id).first()
+        username = user.username
+
+        if request.method == "POST":
+            body = flask.request.form["message_body"]
+
+            msg = models.Message(author=current_user, recipient=user,
+                                 body=body)
+
+            db.session.add(msg)
+            db.session.commit()
+
+            return redirect(url_for('send-message', user_id=user.id))
+
         return flask.render_template('send_message.html', username=username)
 
-    def post(self):
-        pass

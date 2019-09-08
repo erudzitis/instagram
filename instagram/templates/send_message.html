@@ -5,8 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-    <h1>{{ username }}</h1>
-    <input type="text" name="message_body">
-    <button type="submit">Send</button>
+    {% for post in messages %}
+        <small><b>{{ user.username }}</b>: {{ post.body }}</small><br>
+    {% endfor %}
+    <form method="post">
+        <input type="text" name="message_body">
+        <button type="submit">Send</button>
+    </form>
 </body>
 </html>

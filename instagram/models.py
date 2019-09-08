@@ -8,6 +8,8 @@ followers = db.Table('followers',
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
@@ -23,6 +25,14 @@ class User(db.Model):
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+
+    messages_sent = db.relationship('Message',
+                                    foreign_keys='Message.sender_id',
+                                    backref='author', lazy='dynamic')
+    messages_received = db.relationship('Message',
+                                        foreign_keys='Message.recipient_id',
+                                        backref='recipient', lazy='dynamic')
+    last_message_read_time = db.Column(db.DateTime)
 
     def follow(self, user):
         if not self.is_following(user):
@@ -56,6 +66,10 @@ class User(db.Model):
                 followers.c.follower_id == self.id).order_by(
                     Photo.timestamp.desc())
 
+    def new_messages(self):
+        last_read_time = self.last_message_read_time or datetime(1900, 1, 1)
+        return Message.query.filter_by(recipient=self).filter(
+            Message.timestamp > last_read_time).count()
 
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -116,3 +130,12 @@ class Comment(db.Model):
 
     content = db.Column(db.String, nullable=False)
 
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    body = db.Column(db.String(1000))
+    timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return '<Message {}>'.format(self.body)
